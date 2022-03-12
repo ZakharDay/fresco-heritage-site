@@ -1,13 +1,3 @@
-:root {
-  --blue: #005bff;
-  --grey: #777;
-  --black: #222;
-  --border: #dee2e6;
-  --red1: #ff5252;
-  --red2: #ff9c9c;
-  --superwallet: #1161fb;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -18,24 +8,11 @@ body {
 }
 
 body {
-  perspective: 300px;
+  display: flex;
 }
 
 div {
-  transform: translate3d(0, 0, 0) scale(1);
-  animation-duration: 1500ms;
-  animation-name: placeRect;
-  animation-timing-function: ease-out;
-}
-
-@keyframes placeRect {
-  from {
-    transform: translate3d(0, -100px, 0) scale(6);
-    opacity: 0;
-  }
-
-  to {
-    transform: translate3d(0, 0, 0) scale(1);
-    opacity: 1;
-  }
+  margin: auto;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: center;
 }
