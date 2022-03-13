@@ -1,190 +1,71 @@
 import './index.scss'
+import { paintings_filelist } from './filelist'
+import { getRandomArbitrary, sample } from './utilities'
+// import { speed, paintingSize, grid, types } from './settings'
+import { generateGridCells } from './setup'
 
-const speed = 10
-const paintingSize = 100
-const grid = { columns: 4, rows: 6 }
-
-const types = [
-  { columns: 2, rows: 2 },
-  { columns: 2, rows: 3 },
-  { columns: 3, rows: 2 },
-  { columns: 3, rows: 4 },
-  { columns: 4, rows: 3 }
-]
-
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min
-}
-
-function sample(array) {
-  return array[Math.floor(Math.random() * array.length)]
-}
-
-function getFrame() {
-  return document.getElementsByClassName(prototypeClass)[0]
-}
-
-function generateColor() {
-  const symbols = ['a', 'b', 'c', 'd', 'e', 'f', 0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-  let hash = '#'
-
-  for (var i = 0; i < 6; i++) {
-    hash += sample(symbols)
-  }
-
-  return hash
-}
-
-function setFrameSize() {
-  const frame = getFrame()
-  frame.style.width = paintingSize * grid['columns'] + 'px'
-  frame.style.height = paintingSize * grid['rows'] + 'px'
-}
-
-function generateGridCells() {
-  const quantity = grid['columns'] * grid['rows']
-  const promises = []
-
-  for (var i = 0; i < quantity; i++) {
-    promises.push(addGridCell())
-  }
-
-  return promises
-}
-
-function addGridCell() {
-  return new Promise(function (resolve, reject) {
-    const paintingElement = document.createElement('div')
-    paintingElement.classList.add('gridCell')
-    document.getElementById('fresco').appendChild(paintingElement)
-
-    resolve()
-  })
-}
+let filled = false
+let image
 
 function fillGridCellsWithPaintings() {
-  return new Promise((resolve, reject) => {
-    const gridCells = document.getElementsByClassName('gridCell')
+  const allGridCells = document.getElementsByClassName('gridCell')
+  const emptyGridCells = []
 
-    for (var i = 0; i < gridCells.length; i++) {
-      const painting = document.createElement('div')
-      painting.classList.add('painting')
-      // painting.style.backgroundColor = generateColor()
-      gridCells[i].appendChild(painting)
+  for (var i = 0; i < allGridCells.length; i++) {
+    if (allGridCells[i].childNodes.length === 0) {
+      emptyGridCells.push(allGridCells[i])
     }
+  }
 
-    resolve()
-  })
-}
-
-function cycle() {
-  console.log('cycle')
-  const gridCells = document.getElementsByClassName('gridCell')
-  const times = getRandomArbitrary(1, 3)
-  let timeout = getRandomArbitrary(speed * 50, speed * 100)
-
-  for (var i = 0; i < times; i++) {
-    const randomCellIndex = Math.floor(getRandomArbitrary(0, gridCells.length))
-
-    const gridCell = document.getElementsByClassName('gridCell')[
-      randomCellIndex
-    ]
-
-    setTimeout(
-      () => removePainting(gridCell).then(() => addPainting(gridCell)),
-      timeout
-    )
-
-    timeout += getRandomArbitrary(speed * 50, speed * 150)
+  if (emptyGridCells.length != 0) {
+    fillGridCellWithPaintings()
+    setTimeout(() => fillGridCellsWithPaintings(), 1000)
   }
 }
 
-function cycle2(type) {
-  console.log('cycle2')
-  const gridCells = document.getElementsByClassName('gridCell')
+function fillGridCellWithPaintings() {
+  const paintingData = getRandomSquarePainting()
+  const paintingImage = preloadImage(paintingData['url'])
 
-  const maxColumns = grid['columns'] - type['columns']
-  const startColumn = Math.floor(getRandomArbitrary(1, maxColumns))
+  paintingImage.onload = () => placeImageInEmptyGridCell(paintingData['url'])
+}
 
-  const maxRows = grid['rows'] - type['rows']
-  const startRow = Math.floor(getRandomArbitrary(1, maxRows))
+function getRandomSquarePainting() {
+  const squarePaintings = []
 
-  let timeout = speed * 10
+  paintings_filelist.forEach((painting, i) => {
+    if (painting['columns'] === 1) {
+      squarePaintings.push(painting)
+    }
+  })
 
-  console.log('startRow', startRow, 'startColumn', startColumn)
+  return sample(squarePaintings)
+}
 
-  const color = generateColor()
+function preloadImage(url) {
+  image = new Image()
+  image.src = url
+  return image
+}
 
-  for (var r = 0; r < type['rows']; r++) {
-    for (var c = 0; c < type['columns']; c++) {
-      let gridCellIndex =
-        r * grid['columns'] +
-        (c + 1) +
-        ((startRow - 1) * grid['columns'] + startColumn)
+function placeImageInEmptyGridCell(url) {
+  const allGridCells = document.getElementsByClassName('gridCell')
+  const emptyGridCells = []
 
-      const gridCell = document.getElementsByClassName('gridCell')[
-        gridCellIndex - 1
-      ]
-
-      setTimeout(
-        () =>
-          removePainting(gridCell).then(() =>
-            addPaintingOneColor(gridCell, color)
-          ),
-        timeout
-      )
-
-      timeout += speed * 10
+  for (var i = 0; i < allGridCells.length; i++) {
+    if (allGridCells[i].childNodes.length === 0) {
+      emptyGridCells.push(allGridCells[i])
     }
   }
-}
 
-function removePainting(gridCell) {
-  return new Promise((resolve, reject) => {
-    const painting = gridCell.childNodes[0]
-    painting.classList.add('fadeOut')
-    setTimeout(() => resolve(), 1500)
-  })
-}
+  const gridCell = sample(emptyGridCells)
 
-function addPainting(gridCell) {
-  const painting = document.createElement('div')
-  painting.classList.add('painting')
-  painting.style.backgroundColor = generateColor()
-
-  gridCell.childNodes.forEach((p, i) => {
-    p.remove()
-  })
-
-  gridCell.appendChild(painting)
-}
-
-function addPaintingOneColor(gridCell, color) {
-  const painting = document.createElement('div')
-  painting.classList.add('painting')
-  painting.style.backgroundColor = color
-
-  gridCell.innerHTML = ''
-  gridCell.appendChild(painting)
-}
-
-function addButtons() {
-  const placeOne = document.createElement('div')
-  placeOne.classList.add('button')
-  placeOne.classList.add('placeOne')
-  placeOne.innerText = 'Place One'
-  placeOne.addEventListener('click', () => cycle())
-  document.body.appendChild(placeOne)
-
-  const placeFew = document.createElement('div')
-  placeFew.classList.add('button')
-  placeFew.classList.add('placeFew')
-  placeFew.innerText = 'Place Few'
-  placeFew.addEventListener('click', () => cycle2(sample(types)))
-  document.body.appendChild(placeFew)
+  const paintingElement = document.createElement('div')
+  paintingElement.classList.add('painting')
+  paintingElement.style.backgroundImage = `url(${url})`
+  gridCell.appendChild(paintingElement)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   Promise.all(generateGridCells()).then(fillGridCellsWithPaintings)
-  // .then(addButtons)
 })

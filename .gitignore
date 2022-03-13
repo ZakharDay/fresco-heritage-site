@@ -5,3 +5,4 @@ yarn-error.log
 /dev_build/*.css
 /dev_build/*.scss
 /dev_build/*.html
+/paintings
