@@ -792,10 +792,10 @@ function changeOneLargePainting() {
     const gridCellWidth = gridCells[0].getBoundingClientRect().width
 
     const maxColumns = grid.columns - paintingData['columns']
-    const startColumn = Math.floor(getRandomArbitrary(0, maxColumns))
+    const startColumn = Math.floor(getRandomArbitrary(1, maxColumns))
 
     const maxRows = grid.rows - paintingData['rows']
-    const startRow = Math.floor(getRandomArbitrary(0, maxRows))
+    const startRow = Math.floor(getRandomArbitrary(1, maxRows))
 
     let timeout = speed * 10
     let row = 1
