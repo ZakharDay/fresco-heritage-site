@@ -1,6 +1,7 @@
-const speed = 10
+const speed = 100
 const paintingSize = 100
-const grid = { columns: 4, rows: 6 }
+const grid = { columns: 6, rows: 8 }
+const size = 9
 
 const types = [
   { columns: 2, rows: 2 },

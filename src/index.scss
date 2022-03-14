@@ -40,14 +40,14 @@ header {
 #fresco {
   display: flex;
   flex-wrap: wrap;
-  width: 50vw;
+  width: 54vw;
   margin: 50px auto 0;
   background-color: black;
   box-shadow: 0 5px 15px -5px #636363;
 
   .gridCell {
-    width: 12.5vw;
-    height: 12.5vw;
+    width: 9vw;
+    height: 9vw;
 
     .painting {
       width: 100%;
@@ -68,26 +68,12 @@ header {
   }
 }
 
-// .button {
-//   position: absolute;
-//   z-index: 10;
-//   width: 100px;
-//   height: 60px;
-//   background: white;
-//   bottom: 30px;
-//   color: black;
-//   text-align: center;
-//   line-height: 60px;
-//   cursor: pointer;
-//
-//   &.placeOne {
-//     left: 100px;
-//   }
-//
-//   &.placeFew {
-//     left: 300px;
-//   }
-// }
+figcaption {
+  margin-top: 14px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--grey);
+}
 
 footer {
   width: 50vw;
@@ -124,11 +110,11 @@ footer {
   }
 
   #fresco {
-    width: 80vw;
+    width: 84vw;
 
     .gridCell {
-      width: 20vw;
-      height: 20vw;
+      width: 14vw;
+      height: 14vw;
     }
   }
 
